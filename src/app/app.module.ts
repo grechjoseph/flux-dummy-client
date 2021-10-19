@@ -9,9 +9,11 @@ import { AppComponent } from 'src/app/app.component';
 
 // Module
 import { AppRoutingModule } from 'src/app/app-routing.module';
+import { HeaderComponent } from './components/header/header.component';
+import { ButtonsComponent } from './components/buttons/buttons.component';
 
 @NgModule({
-  declarations: [AppComponent, FluxManagementComponent],
+  declarations: [AppComponent, FluxManagementComponent, HeaderComponent, ButtonsComponent],
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
