@@ -19,9 +19,9 @@ docker run -p 8080:8080 josephgrech90/flux
 # Step 5: open the following url
 http://localhost:8080
 
-## Development server
+# Development server (run the app and open in browser)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+ng serve -o
 
 ## Code scaffolding
 
