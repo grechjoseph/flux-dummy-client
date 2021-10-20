@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { SSE } from '../util/SSE';
-import { Observable } from 'rxjs';
-import { environment } from './../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -12,43 +11,14 @@ export class FluxService {
 
   constructor() {}
 
-  public data() {
-    let source = SSE('http://localhost:8080/?iterations=3&interval=2000', {});
-    source.addEventListener('message', (e) => {
-      let payload = JSON.parse(e.data);
-      console.log(payload);
-    });
-    source.stream();
-  }
-
-  public data2() {
-    let source = SSE('http://localhost:8080', {
-      headers: { 'Content-Type': 'application/json' },
-      payload: JSON.stringify({ iterations: 3, interval: 2000 }),
-      method: 'POST',
-    });
-
-    source.stream();
-
-    source.addEventListener('message', (e) => {
-      let payload = JSON.parse(e.data);
-      console.log(payload);
-    });
-
-    source.removeEventListener('message');
-  }
-
-  public flux<T, K>(path: string, httpMethod: string, payload: T): Observable<K> {
+  public flux<T, K>(path: string, headers: string, httpMethod: string, payload?: T): Observable<K> {
     return new Observable((observer) => {
-      let requestURL = `${environment.api}/${path}`;
+      let requestURL = path;
 
-      let requestHeaders = {
-        'Content-Type': 'application/json',
-      };
       let request = {
-        headers: requestHeaders,
-        payload: JSON.stringify(payload),
-        method: httpMethod,
+        headers: headers ? JSON.parse(headers) : "",
+        payload: payload,
+        method: httpMethod
       };
 
       this.source = SSE(requestURL, request);

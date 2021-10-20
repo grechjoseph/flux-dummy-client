@@ -1,11 +1,9 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { Flux } from 'src/app/models/flux-payload.model';
-import { FluxResponse } from 'src/app/models/flux-response.model';
-import { delay, switchMap, takeUntil, timeout } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 // Service
 import { FluxService } from 'src/app/services/flux.service';
-import { from, interval, of, Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-flux-management',
@@ -14,29 +12,54 @@ import { from, interval, of, Subscription, timer } from 'rxjs';
 })
 export class FluxManagementComponent implements OnInit {
   fluxSubscription: Subscription;
-  constructor(private fluxService: FluxService) {}
 
-  ngOnInit(): void {}
+  loading: boolean = false;
 
-  onStart() {
-    if (this.fluxSubscription) {
-      this.onClose();
-    }
-    this.fluxSubscription = this.fluxService
-      .flux<Flux, FluxResponse>('', 'POST', {
-        iterations: 4000,
-        interval: 2000
-      })
-      .subscribe((data: FluxResponse) => {
-        console.log('data', data);
-      });
+  stopButtonText: string = 'Stop';
 
-    console.log(this.fluxSubscription.closed);
+  request: string = '';
+
+  fluxForm: FormGroup;
+
+  list: any[] = [];
+
+  constructor(private fluxService: FluxService, private formBuilder: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.fluxForm = this.formBuilder.group({
+      url: ['', [Validators.required]],
+      request: [''],
+      httpVerb: [''],
+      headers: [JSON.stringify({ 'Content-Type': 'application/json' })],
+    });
   }
 
-  onClose() {
-    this.fluxSubscription.unsubscribe();
+  onReset() {
+    this.stopButtonText = 'Stop';
+    this.loading = false;
+
+    this.list = [];
+
     this.fluxService.sourcing.close();
-    console.log('closed');
+
+    if (this.fluxSubscription) this.fluxSubscription.unsubscribe();
+  }
+
+  onStart() {
+    this.loading = true;
+
+    let { url, request, headers, httpVerb } = this.fluxForm.controls;
+
+    this.fluxSubscription = this.fluxService
+      .flux<string, string>(url.value, headers.value, httpVerb.value ? httpVerb.value : 'GET', request.value)
+      .subscribe((data: string) => {
+        this.list.push(data);
+      });
+  }
+
+  onStop() {
+    this.stopButtonText = 'Stopped';
+    this.fluxService.sourcing.close();
+    if (this.fluxSubscription) this.fluxSubscription.unsubscribe();
   }
 }

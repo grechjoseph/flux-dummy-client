@@ -1,5 +1,49 @@
+<form class="step-general cmp-sensor-wizard-el-gnl-frm" [formGroup]="fluxForm">
+    <div class="container mt-10">
+        <div class="form-container" *ngIf="!loading">
+            <div class="input-group">
+                <label for="httpVerb">Http Method</label>
+                <input type="text" formControlName="httpVerb" placeholder="POST" />
+            </div>
 
-<button type="button" (click)="onStart()">open</button>
-<button type="button" (click)="onClose()">close</button>
+            <div class="input-group">
+                <label for="url">URL</label>
+                <input type="text" formControlName="url" placeholder="http://localhost:8080" />
+                <div class="error" *ngIf="fluxForm.controls['url'].errors && fluxForm.controls['url'].touched">
+                    <div [hidden]="!fluxForm.controls['url'].errors.required">
+                        URL is Required
+                    </div>
+                </div>
+            </div>
 
-<app-buttons buttonText="Click"></app-buttons>
+            <div class="input-group">
+                <label for="headers">Headers</label>
+                <textarea name="request" id="headers" cols="30" rows="10" formControlName="headers" placeholder=" { 'header1Key':'header1Value', 'headerNKey':'headerNValue' }"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="request">Request Body</label>
+                <textarea name="request" id="request" cols="30" rows="10" formControlName="request" placeholder=" { 'field1Key':'field1Value', 'fieldNKey':'fieldNValue' } "></textarea>
+            </div>
+
+        </div>
+
+        <div class="button-container">
+            <button type="button" class="btn btn-primary" [disabled]="fluxForm.invalid || loading"
+                (click)="onStart()">Start</button>
+            <button type="button" class="btn btn-primary" [disabled]="stopButtonText == 'Stopped'"
+                (click)="onStop()">{{stopButtonText}}</button>
+            <button type="button" class="btn btn-primary" (click)="onReset()">Back</button>
+        </div>
+    </div>
+</form>
+
+<div class="container">
+    <div class="list-received">
+        <ul>
+            <li *ngFor="let item of list">
+                {{item | json}}
+            </li>
+        </ul>
+    </div>
+</div>
