@@ -1,6 +1,23 @@
-# IotEvents
+# Java Flux Testing App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
+The following app is used to test against event source (Flux).
+
+Mainly we are running against docker instance
+
+# Step 1: Install docker desktop
+https://www.docker.com/products/docker-desktop
+
+# Step 2: open command prompt
+ run command prompt
+
+# Step 3: run the following commands
+docker pull josephgrech90/flux
+
+# Step 4: run the following code to run the docker
+docker run -p 8080:8080 josephgrech90/flux
+
+# Step 5: open the following url
+http://localhost:8080
 
 ## Development server
 
@@ -25,8 +42,3 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
-
-
-docker pull josephgrech90/flux
-
-docker run -p 8080:8080 josephgrech90/flux
